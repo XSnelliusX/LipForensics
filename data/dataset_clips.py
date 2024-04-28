@@ -2,6 +2,7 @@
 
 import bisect
 import os
+from tqdm import tqdm
 
 from PIL import Image
 import numpy as np
