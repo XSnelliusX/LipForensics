@@ -143,7 +143,7 @@ def main():
         "DeeperForensics",
     ]:
         if args.dataset == "FaceForensics++":
-            fake_types = ('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'Face2Face', 'FaceShifter' 'NeuralTextures')
+            fake_types = ('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'Face2Face', 'FaceShifter', 'NeuralTextures')
 
         else:
             fake_types = (args.dataset,)
