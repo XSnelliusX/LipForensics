@@ -85,7 +85,8 @@ def compute_video_level_auc(video_to_logits, video_to_labels):
     output_labels = torch.stack([video_to_labels[video_id] for video_id in video_to_logits.keys()])
 
     fpr, tpr, _ = metrics.roc_curve(output_labels.cpu().numpy(), output_batch.cpu().numpy())
-    return metrics.auc(fpr, tpr)
+    auc = metrics.auc(fpr, tpr)
+    return auc, output_batch
 
 
 def validate_video_level(model, loader, args):
@@ -120,8 +121,8 @@ def validate_video_level(model, loader, args):
                 video_to_logits[video_id].append(logits[i])
                 video_to_labels[video_id] = labels[i]
 
-    auc_video = compute_video_level_auc(video_to_logits, video_to_labels)
-    return auc_video
+    auc_video, logits = compute_video_level_auc(video_to_logits, video_to_labels)
+    return auc_video, logits
 
 
 def main():
@@ -174,8 +175,8 @@ def main():
 
     loader = DataLoader(dataset, batch_size=args.batch_size, sampler=sampler, num_workers=args.num_workers)
 
-    auc = validate_video_level(model, loader, args)
-    print(args.dataset, f"AUC (video-level): {auc}")
+    auc, logits = validate_video_level(model, loader, args)
+    print(args.dataset, f"AUC (video-level): {auc}, Logits (video-level): {logits}")
 
 
 if __name__ == "__main__":
