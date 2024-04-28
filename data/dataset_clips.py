@@ -14,10 +14,12 @@ class ForensicsClips(Dataset):
     methods in dataset"""
     def __init__(
             self,
-            real_videos,
-            fake_videos,
+            real_actors_videos,
+            real_youtube_videos,
+            fake_actors_videos,
+            fake_youtube_videos,
             frames_per_clip,
-            fakes=('Deepfakes', 'FaceSwap', 'Face2Face', 'NeuralTextures'),
+            fakes=('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'FaceShifter', 'Face2Face', 'NeuralTextures'),
             compression='c23',
             grayscale=False,
             transform=None,
@@ -30,22 +32,22 @@ class ForensicsClips(Dataset):
         self.transform = transform
         self.clips_per_video = []
 
-        ds_types = ['RealFF'] + list(fakes)  # Since we compute AUC, we need to include the Real dataset as well
+        ds_types = ['actors', 'youtube'] + list(fakes)  # Since we compute AUC, we need to include the Real dataset as well
         for ds_type in ds_types:
-
             # get list of video names
             video_paths = os.path.join('./data/datasets/Forensics', ds_type, compression, 'cropped_mouths')
-            if ds_type == 'RealFF':
-                videos = sorted(real_videos)
-            elif ds_type == 'DeeperForensics':  # Extra processing for DeeperForensics videos due to naming differences
-                videos = []
-                for f in fake_videos:
-                    for el in os.listdir(video_paths):
-                        if el.startswith(f.split('_')[0]):
-                            videos.append(el)
-                videos = sorted(videos)
+            if ds_type == 'youtube':
+                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/original_sequences', ds_type, compression, 'cropped_mouths')
+                videos = sorted(real_youtube_videos)
+            elif ds_type == 'actors':
+                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/original_sequences', ds_type, compression, 'cropped_mouths')
+                videos = sorted(real_actors_videos)
+            elif ds_type == 'DeepFakeDetection':  # Extra processing for DeeperForensics videos due to naming differences
+                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, compression, 'cropped_mouths')
+                videos = sorted(fake_actors_videos)
             else:
-                videos = sorted(fake_videos)
+                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, compression, 'cropped_mouths')
+                videos = sorted(fake_youtube_videos)
 
             self.videos_per_type[ds_type] = len(videos)
             for video in videos:
@@ -89,7 +91,7 @@ class ForensicsClips(Dataset):
     def __getitem__(self, idx):
         sample, video_idx = self.get_clip(idx)
 
-        label = 0 if video_idx < self.videos_per_type['RealFF'] else 1
+        label = 0 if video_idx < (self.videos_per_type['actors'] + self.videos_per_type['youtube']) else 1        
         label = torch.from_numpy(np.array(label))
         sample = torch.from_numpy(sample).unsqueeze(-1)
         if self.transform is not None:

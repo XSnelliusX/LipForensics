@@ -148,11 +148,13 @@ def main():
             fake_types = (args.dataset,)
 
         test_split = pd.read_json(args.split_path, dtype=False)
-        test_files_real, test_files_fake = get_files_from_split(test_split)
+        real_actors_videos, real_youtube_videos, fake_actors_videos, fake_youtube_videos = get_files_from_split(test_split)
 
         dataset = ForensicsClips(
-            test_files_real,
-            test_files_fake,
+            real_actors_videos,
+            real_youtube_videos,
+            fake_actors_videos,
+            fake_youtube_videos,
             args.frames_per_clip,
             grayscale=args.grayscale,
             compression=args.compression,
