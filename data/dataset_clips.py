@@ -34,7 +34,7 @@ class ForensicsClips(Dataset):
         self.clips_per_video = []
 
         ds_types = ['actors', 'youtube'] + list(fakes)  # Since we compute AUC, we need to include the Real dataset as well
-        for ds_type in tqdm(ds_types, desc=f"Loading Datasets {ds_types}"):
+        for ds_type in tqdm(ds_types, desc=f"Loading Datasets"):
             # get list of video names
             video_paths = os.path.join('./data/datasets/Forensics', ds_type, compression, 'cropped_mouths')
             if ds_type == 'youtube':
