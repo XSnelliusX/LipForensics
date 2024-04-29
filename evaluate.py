@@ -86,7 +86,7 @@ def compute_video_level_auc(video_to_logits, video_to_labels):
 
     fpr, tpr, _ = metrics.roc_curve(output_labels.cpu().numpy(), output_batch.cpu().numpy())
     auc = metrics.auc(fpr, tpr)
-    return auc, output_batch
+    return auc, output_batch, output_labels
 
 
 def validate_video_level(model, loader, args):
@@ -121,8 +121,8 @@ def validate_video_level(model, loader, args):
                 video_to_logits[video_id].append(logits[i])
                 video_to_labels[video_id] = labels[i]
 
-    auc_video, logits = compute_video_level_auc(video_to_logits, video_to_labels)
-    return auc_video, logits
+    auc_video, logits, predictions = compute_video_level_auc(video_to_logits, video_to_labels)
+    return auc_video, logits, predictions
 
 
 def main():
@@ -175,8 +175,9 @@ def main():
 
     loader = DataLoader(dataset, batch_size=args.batch_size, sampler=sampler, num_workers=args.num_workers)
 
-    auc, logits = validate_video_level(model, loader, args)
+    auc, logits, predictions = validate_video_level(model, loader, args)
     print(args.dataset, f"AUC (video-level): {auc}, Logits (video-level): {logits}")
+    print(f"Predicitons: {predictions}")
 
 
 if __name__ == "__main__":
