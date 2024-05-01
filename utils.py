@@ -20,17 +20,17 @@ def get_files_from_dataset(dataset):
             "10", "11", "12", "13", "15", "17", "3", "5", "7", "9", "l3", "l4", "l5", "l7", "l8"
         ]
     elif dataset == "DFDC":
-        real_videos == []
+        real_videos = []
         fake_videos == []
     elif dataset == "CelebDF":
-        real_videos == [
+        real_videos = [
             "00000", "00001", "00002", "00003", "00004", "00005",
             "00006", "00007", "00008", "00009", "00010", "00011",
             "00012", "00013", "00014", "00015", "00016", "00017",
             "00018", "00019", "00020", "00021", "00022", "00023",
             "00024", "00025", "00026", "00027", "00028", "00029"
         ]
-        fake_videos == [
+        fake_videos = [
             "id0_id16_0000", "id0_id16_0001", "id0_id16_0002", "id0_id16_0003", "id0_id16_0004",
             "id0_id16_0005", "id0_id16_0006", "id0_id16_0007", "id0_id16_0008", "id0_id16_0009",
             "id0_id17_0000", "id0_id17_0001", "id0_id17_0002", "id0_id17_0003", "id0_id17_0005",
@@ -39,8 +39,8 @@ def get_files_from_dataset(dataset):
             "id0_id1_0009", "id0_id20_0000", "id0_id20_0001", "id0_id20_0002", "id0_id20_0003"
         ]
     elif dataset == "FakeAVCeleb":
-        real_videos == []
-        fake_videos == []
+        real_videos = []
+        fake_videos = []
     else:
         real_videos = [
             "01__hugging_happy", "01__kitchen_pan", "01__kitchen_still",
