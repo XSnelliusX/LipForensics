@@ -15,13 +15,11 @@ class ForensicsClips(Dataset):
     methods in dataset"""
     def __init__(
             self,
-            real_actors_videos,
-            real_youtube_videos,
-            fake_actors_videos,
-            fake_youtube_videos,
-            fake_vasa_videos,
+            real_videos,
+            fake_videos,
             frames_per_clip,
             fakes=('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'FaceShifter', 'Face2Face', 'NeuralTextures'),
+            reals=('actors', 'youtube'),
             compression='c23',
             grayscale=False,
             transform=None,
@@ -34,25 +32,37 @@ class ForensicsClips(Dataset):
         self.transform = transform
         self.clips_per_video = []
 
-        ds_types = ['actors', 'youtube'] + list(fakes)  # Since we compute AUC, we need to include the Real dataset as well
+        ds_types = list(reals) + list(fakes)  # Since we compute AUC, we need to include the Real dataset as well
         for ds_type in tqdm(ds_types, desc=f"Loading Datasets"):
             # get list of video names
             video_paths = os.path.join('./data/datasets/Forensics', ds_type, compression, 'cropped_mouths')
-            if ds_type == 'youtube':
+            if ds_type in ['youtube', 'actors']:
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/original_sequences', ds_type, compression, 'cropped_mouths')
-                videos = sorted(real_youtube_videos)
-            elif ds_type == 'actors':
-                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/original_sequences', ds_type, compression, 'cropped_mouths')
-                videos = sorted(real_actors_videos)
-            elif ds_type == 'DeepFakeDetection':  # Extra processing for DeeperForensics videos due to naming differences
-                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, compression, 'cropped_mouths')
-                videos = sorted(fake_actors_videos)
-            elif ds_type == 'VASA':  # Extra processing for VASA videos due to naming differences
-                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, 'cropped_mouths')
-                videos = sorted(fake_vasa_videos)
+                videos = sorted(real_videos)
+            elif ds_type == 'VASA':  # Extra processing for VASA videos 
+                video_paths = os.path.join('/content/deepfake_detection_datasets/VASA-1', 'cropped_mouths')
+                videos = sorted(fake_videos)
+            elif ds_type == 'Celeb-real':  # Extra processing for CelebDF videos
+                video_paths = os.path.join('/content/deepfake_detection_datasets/Celeb-DF', ds_type, 'cropped_mouths')
+                videos = sorted(real_videos)
+            elif ds_type == 'Celeb-synthesis':  # Extra processing for CelebDF videos
+                video_paths = os.path.join('/content/deepfake_detection_datasets/Celeb-DF', ds_type, 'cropped_mouths')
+                videos = sorted(fake_videos)
+            elif ds_type == 'DFDC-real':  # Extra processing for DFDC videos
+                video_paths = os.path.join('/content/deepfake_detection_datasets/DFDC/real', 'cropped_mouths')
+                videos = sorted(real_videos)
+            elif ds_type == 'DFDC-fake':  # Extra processing for DFDC videos
+                video_paths = os.path.join('/content/deepfake_detection_datasets/DFDC/fake', 'cropped_mouths')
+                videos = sorted(fake_videos)
+            elif ds_type == 'FakeAVCeleb-real':  # Extra processing for DFDC videos
+                video_paths = os.path.join('/content/deepfake_detection_datasets/FakeAVCeleb/real', 'cropped_mouths')
+                videos = sorted(real_videos)
+            elif ds_type == 'FakeAVCeleb-fake':  # Extra processing for DFDC videos
+                video_paths = os.path.join('/content/deepfake_detection_datasets/FakeAVCeleb/fake', 'cropped_mouths')
+                videos = sorted(fake_videos)
             else:
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, compression, 'cropped_mouths')
-                videos = sorted(fake_youtube_videos)
+                videos = sorted(fake_videos)
 
             self.videos_per_type[ds_type] = len(videos)
             for video in videos:

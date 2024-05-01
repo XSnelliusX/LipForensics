@@ -34,6 +34,7 @@ def parse_args():
             "CelebDF",
             "DFDC",
             "VASA",
+            "FakeAVCeleb",
         ],
         default="FaceForensics++",
     )
@@ -135,31 +136,25 @@ def main():
     transform = Compose(
         [ToTensorVideo(), CenterCrop((88, 88)), NormalizeVideo((0.421,), (0.165,))]
     )
-    if args.dataset in [
-        "FaceForensics++",
-        "Deepfakes",
-        "FaceSwap",
-        "Face2Face",
-        "NeuralTextures",
-        "FaceShifter",
-        "DeeperForensics",
-        "VASA",
-    ]:
-        if args.dataset == "FaceForensics++":
-            fake_types = ('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'Face2Face', 'FaceShifter', 'NeuralTextures')
-
-        else:
-            fake_types = (args.dataset,)
-
-        # There will only be VASA Videos when the Vasa Dataset is used, also then there will be 15 real videos so the AUC can still be calculated
-        real_actors_videos, real_youtube_videos, fake_actors_videos, fake_youtube_videos, fake_vasa_videos = get_files_from_dataset(args.dataset)
-
+    real_videos, fake_videos = get_files_from_dataset(args.dataset)
+    if args.dataset == "FaceForensics++":
+        fake_types = ('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'Face2Face', 'FaceShifter', 'NeuralTextures')
         dataset = ForensicsClips(
-            real_actors_videos,
-            real_youtube_videos,
-            fake_actors_videos,
-            fake_youtube_videos,
-            fake_vasa_videos,
+            real_videos,
+            fake_videos,
+            args.frames_per_clip,
+            grayscale=args.grayscale,
+            compression=args.compression,
+            fakes=fake_types,
+            transform=transform,
+            max_frames_per_video=110,
+        )
+    elif args.dataset == "VASA":
+        fake_types = (args.dataset,)
+        
+        dataset = ForensicsClips(
+            real_videos,
+            fake_videos,
             args.frames_per_clip,
             grayscale=args.grayscale,
             compression=args.compression,
@@ -168,10 +163,50 @@ def main():
             max_frames_per_video=110,
         )
     elif args.dataset == "CelebDF":
-        dataset = CelebDFClips(args.frames_per_clip, args.grayscale, transform)
-    else:
-        metadata = pd.read_json(args.dfdc_metadata_path).T
-        dataset = DFDCClips(args.frames_per_clip, metadata, args.grayscale, transform)
+        fake_types = ('Celeb-synthesis',)
+        real_types = ('Celeb-real',)
+        
+        dataset = ForensicsClips(
+            real_videos,
+            fake_videos,
+            args.frames_per_clip,
+            grayscale=args.grayscale,
+            compression=args.compression,
+            fakes=fake_types,
+            reals=real_types,
+            transform=transform,
+            max_frames_per_video=110,
+        )
+    elif args.dataset == "DFDC":
+        fake_types = ('DFDC-fake',)
+        real_types = ('DFDC-real',)
+        
+        dataset = ForensicsClips(
+            real_videos,
+            fake_videos,
+            args.frames_per_clip,
+            grayscale=args.grayscale,
+            compression=args.compression,
+            fakes=fake_types,
+            reals=real_types,
+            transform=transform,
+            max_frames_per_video=110,
+        )
+    elif args.dataset == "FakeAVCeleb":
+        fake_types = ('FakeAVCeleb-fake',)
+        real_types = ('FakeAVCeleb-real',)
+        
+        dataset = ForensicsClips(
+            real_videos,
+            fake_videos,
+            args.frames_per_clip,
+            grayscale=args.grayscale,
+            compression=args.compression,
+            fakes=fake_types,
+            reals=real_types,
+            transform=transform,
+            max_frames_per_video=110,
+        )
 
     # Get sampler that splits video into non-overlapping clips
     sampler = ConsecutiveClipSampler(dataset.clips_per_video)

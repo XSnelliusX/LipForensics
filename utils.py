@@ -11,16 +11,25 @@ def get_files_from_dataset(dataset):
         String containing the Dataset Name
     """
     if dataset == "VASA":
-        real_actors_videos = ["01__hugging_happy", "01__kitchen_pan", "01__kitchen_still",
-            "01__outside_talking_pan_laughing", "01__outside_talking_still_laughing"]
-        real_youtube_videos = ["008", "033", "035", "036", "044", "046", "054", "055", "062", "066"]
-        fake_actors_videos = []
-        fake_youtube_videos = []
-        fake_vasa_videos = [
+        # Using some Real videos from FF++ so the AUC can be calculated
+        real_videos = ["01__hugging_happy", "01__kitchen_pan", "01__kitchen_still",
+            "01__outside_talking_pan_laughing", "01__outside_talking_still_laughing", 
+            "008", "033", "035", "036", "044", "046", "054", "055", "062", "066"
+        ]
+        fake_videos = [
             "10", "11", "12", "13", "15", "17", "3", "5", "7", "9", "l3", "l4", "l5", "l7", "l8"
         ]
+    elif dataset == "DFDC":
+        real_videos == []
+        fake_videos == []
+    elif dataset == "CelebDF":
+        real_videos == []
+        fake_videos == []
+    elif dataset == "FakeAVCeleb":
+        real_videos == []
+        fake_videos == []
     else:
-        real_actors_videos = [
+        real_videos = [
             "01__hugging_happy", "01__kitchen_pan", "01__kitchen_still",
             "01__outside_talking_pan_laughing", "01__outside_talking_still_laughing",
             "01__walking_outside_cafe_disgusted", "02__exit_phone_room", "02__meeting_serious",
@@ -55,9 +64,7 @@ def get_files_from_dataset(dataset):
             "14__walking_down_street_outside_angry", "14__walking_outside_cafe_disgusted",
             "15__exit_phone_room", "15__kitchen_still", "15__talking_angry_couch",
             "15__walking_and_outside_surprised", "15__walking_outside_cafe_disgusted",
-            "16__outside_talking_pan_laughing"
-        ]
-        real_youtube_videos = [
+            "16__outside_talking_pan_laughing",
             "008", "033", "035", "036", "044", "046", "054", "055", "062", "066",
             "071", "096", "097", "101", "107", "109", "112", "128", "134", "147",
             "150", "153", "159", "168", "175", "183", "189", "192", "200", "206",
@@ -68,7 +75,7 @@ def get_files_from_dataset(dataset):
             "479", "481", "488", "520", "522", "529", "542", "554", "556", "565",
             "572", "585", "588", "589", "599", "607", "611", "623", "630", "633"
         ]
-        fake_actors_videos = [
+        fake_videos = [
             "01_11__talking_against_wall__9229VVZ3", "01_27__outside_talking_still_laughing__ZYCZ30C0",
             "02_06__walking_down_indoor_hall_disgust__U6MDWIHG", "02_15__talking_against_wall__HTG660F8",
             "03_11__talking_against_wall__P08VGHTA", "03_18__walking_outside_cafe_disgusted__22UBC0BS",
@@ -83,9 +90,7 @@ def get_files_from_dataset(dataset):
             "10_22__kitchen_pan__EHARPYBT", "11_18__walking_outside_cafe_disgusted__R1NMCHKG",
             "12_15__talking_angry_couch__N0SRODQD", "12_18__outside_talking_pan_laughing__IKH1LBBY",
             "13_03__exit_phone_room__GBYWJW06", "14_03__exit_phone_room__KJ221YN0",
-            "14_13__walk_down_hall_angry__KMQ3AW6A", "14_21__podium_speech_happy__IRKML4J0"
-        ]
-        fake_youtube_videos =  [
+            "14_13__walk_down_hall_angry__KMQ3AW6A", "14_21__podium_speech_happy__IRKML4J0",
             "033_097", "035_036", "036_035", "044_945", "055_147",
             "097_033", "134_192", "147_055", "159_175", "175_159",
             "183_253", "192_134", "210_241", "241_210", "252_266",
@@ -94,7 +99,5 @@ def get_files_from_dataset(dataset):
             "585_599", "599_585", "644_657", "648_654", "654_648"
         ]
 
-        fake_vasa_videos = []
-
-    return real_actors_videos, real_youtube_videos, fake_actors_videos, fake_youtube_videos, fake_vasa_videos
+    return real_videos, fake_videos
 
