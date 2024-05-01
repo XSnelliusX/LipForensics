@@ -99,8 +99,24 @@ def get_files_from_dataset(dataset):
             "id0_id1_0009", "id0_id20_0000", "id0_id20_0001", "id0_id20_0002", "id0_id20_0003"
         ]
     elif dataset == "FakeAVCeleb":
-        real_videos = []
-        fake_videos = []
+        real_videos = [
+            "00001", "00002", "00005", "00005_1", "00005_2", "00010", "00010_1",
+            "00017", "00021", "00031", "00044", "00044_1", "00052", "00053", "00072",
+            "00092", "00092_1", "00099", "00109", "00109_1", "00109_2", "00118",
+            "00118_1", "00135", "00143", "00160", "00160_1", "00167", "00206", "00320"
+        ]
+        fake_videos = [
+            "00092_id00395_wM5kGJfTtEM", "00092_id00484_u7YTz8eFZv0", "00092_id01236_wavtolip",
+            "00107_id00087_0ZbOp9FgZf8", "00109_id01171_XSINMRoTb0E", "00109_id01597_wavtolip",
+            "00118_id04583_M10zZFjuAb0", "00126_id00559_wavtolip", "00126_id01123_wavtolip",
+            "00143_id00732_amGRpH0AJCs_faceswap", "00143_id01544_wavtolip", "00143_id04073_KT7B07WFWyM",
+            "00160_id00430_wavtolip", "00171_id00848_wavtolip", "00173_id08613_wavtolip",
+            "00183_2", "00186_id04554_wavtolip", "00191_id00391_TjJgUZaenWI", "00191_id01036_wavtolip",
+            "00195_id00098_wavtolip", "00195_id05231_wavtolip", "00202_id03816_wavtolip",
+            "00209_id06066_9e5vgpwmruA", "00221_id06334_wavtolip", "00245_id00560_wavtolip",
+            "00255_id00835_zWTp4szbb5k", "00271_id02824_glBy_mYcXZw", "00276_id07200_wavtolip",
+            "00284_id04583_M10zZFjuAb0", "00311_id00633_UXrTMta1EDM"
+        ]
     else:
         real_videos = [
             "01__hugging_happy", "01__kitchen_pan", "01__kitchen_still",
