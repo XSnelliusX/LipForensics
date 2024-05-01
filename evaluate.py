@@ -14,7 +14,7 @@ from data.transforms import NormalizeVideo, ToTensorVideo
 from data.dataset_clips import ForensicsClips, CelebDFClips, DFDCClips
 from data.samplers import ConsecutiveClipSampler
 from models.spatiotemporal_net import get_model
-from utils import get_files_from_split
+from utils import get_files_from_dataset
 
 
 def parse_args():
@@ -142,6 +142,7 @@ def main():
         "NeuralTextures",
         "FaceShifter",
         "DeeperForensics",
+        "VASA",
     ]:
         if args.dataset == "FaceForensics++":
             fake_types = ('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'Face2Face', 'FaceShifter', 'NeuralTextures')
@@ -149,14 +150,15 @@ def main():
         else:
             fake_types = (args.dataset,)
 
-        test_split = pd.read_json(args.split_path, dtype=False)
-        real_actors_videos, real_youtube_videos, fake_actors_videos, fake_youtube_videos = get_files_from_split(test_split)
+        # There will only be VASA Videos when the Vasa Dataset is used, also then there will be 15 real videos so the AUC can still be calculated
+        real_actors_videos, real_youtube_videos, fake_actors_videos, fake_youtube_videos, fake_vasa_videos = get_files_from_dataset(args.dataset)
 
         dataset = ForensicsClips(
             real_actors_videos,
             real_youtube_videos,
             fake_actors_videos,
             fake_youtube_videos,
+            fake_vasa_videos,
             args.frames_per_clip,
             grayscale=args.grayscale,
             compression=args.compression,

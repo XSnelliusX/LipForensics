@@ -19,6 +19,7 @@ class ForensicsClips(Dataset):
             real_youtube_videos,
             fake_actors_videos,
             fake_youtube_videos,
+            fake_vasa_videos,
             frames_per_clip,
             fakes=('DeepFakeDetection', 'Deepfakes', 'FaceSwap', 'FaceShifter', 'Face2Face', 'NeuralTextures'),
             compression='c23',
@@ -45,6 +46,9 @@ class ForensicsClips(Dataset):
                 videos = sorted(real_actors_videos)
             elif ds_type == 'DeepFakeDetection':  # Extra processing for DeeperForensics videos due to naming differences
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, compression, 'cropped_mouths')
+                videos = sorted(fake_actors_videos)
+            elif ds_type == 'VASA':  # Extra processing for VASA videos due to naming differences
+                video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, 'cropped_mouths')
                 videos = sorted(fake_actors_videos)
             else:
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, compression, 'cropped_mouths')
