@@ -32,6 +32,9 @@ class ForensicsClips(Dataset):
         self.transform = transform
         self.clips_per_video = []
 
+        self.videos_per_type['real'] = 0
+        self.videos_per_type['fake'] = 0
+
         ds_types = list(reals) + list(fakes)  # Since we compute AUC, we need to include the Real dataset as well
         for ds_type in tqdm(ds_types, desc=f"Loading Datasets"):
             # get list of video names
@@ -39,32 +42,40 @@ class ForensicsClips(Dataset):
             if ds_type in ['youtube', 'actors']:
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/original_sequences', ds_type, compression, 'cropped_mouths')
                 videos = sorted(real_videos)
+                self.videos_per_type['real'] = self.videos_per_type['real'] + len(videos)
             elif ds_type == 'VASA':  # Extra processing for VASA videos 
                 video_paths = os.path.join('/content/deepfake_detection_datasets/VASA-1', 'cropped_mouths')
                 videos = sorted(fake_videos)
+                self.videos_per_type['fake'] = self.videos_per_type['fake'] + len(videos)
             elif ds_type == 'Celeb-real':  # Extra processing for CelebDF videos
                 video_paths = os.path.join('/content/deepfake_detection_datasets/Celeb-DF', ds_type, 'cropped_mouths')
                 videos = sorted(real_videos)
+                self.videos_per_type['real'] = self.videos_per_type['real'] + len(videos)
             elif ds_type == 'Celeb-synthesis':  # Extra processing for CelebDF videos
                 video_paths = os.path.join('/content/deepfake_detection_datasets/Celeb-DF', ds_type, 'cropped_mouths')
                 videos = sorted(fake_videos)
+                self.videos_per_type['fake'] = self.videos_per_type['fake'] + len(videos)
             elif ds_type == 'DFDC-real':  # Extra processing for DFDC videos
                 video_paths = os.path.join('/content/deepfake_detection_datasets/DFDC/real', 'cropped_mouths')
                 videos = sorted(real_videos)
+                self.videos_per_type['real'] = self.videos_per_type['real'] + len(videos)
             elif ds_type == 'DFDC-fake':  # Extra processing for DFDC videos
                 video_paths = os.path.join('/content/deepfake_detection_datasets/DFDC/fake', 'cropped_mouths')
                 videos = sorted(fake_videos)
+                self.videos_per_type['fake'] = self.videos_per_type['fake'] + len(videos)
             elif ds_type == 'FakeAVCeleb-real':  # Extra processing for DFDC videos
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FakeAVCeleb/real', 'cropped_mouths')
                 videos = sorted(real_videos)
+                self.videos_per_type['real'] = self.videos_per_type['real'] + len(videos)
             elif ds_type == 'FakeAVCeleb-fake':  # Extra processing for DFDC videos
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FakeAVCeleb/fake', 'cropped_mouths')
                 videos = sorted(fake_videos)
+                self.videos_per_type['fake'] = self.videos_per_type['fake'] + len(videos)
             else:
                 video_paths = os.path.join('/content/deepfake_detection_datasets/FFPP/manipulated_sequences', ds_type, compression, 'cropped_mouths')
                 videos = sorted(fake_videos)
+                self.videos_per_type['fake'] = self.videos_per_type['fake'] + len(videos)
 
-            self.videos_per_type[ds_type] = len(videos)
             for video in videos:
                 path = os.path.join(video_paths, video)
                 num_frames = min(len(os.listdir(path)), max_frames_per_video)
@@ -106,7 +117,7 @@ class ForensicsClips(Dataset):
     def __getitem__(self, idx):
         sample, video_idx = self.get_clip(idx)
 
-        label = 0 if video_idx < (self.videos_per_type['actors'] + self.videos_per_type['youtube']) else 1        
+        label = 0 if video_idx < self.videos_per_type['real'] else 1        
         label = torch.from_numpy(np.array(label))
         sample = torch.from_numpy(sample).unsqueeze(-1)
         if self.transform is not None:
