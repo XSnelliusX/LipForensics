@@ -33,6 +33,7 @@ def parse_args():
             "DeeperForensics",
             "CelebDF",
             "DFDC",
+            "VASA",
         ],
         default="FaceForensics++",
     )
